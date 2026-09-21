@@ -2,6 +2,16 @@
 
 Chrome extension (Manifest V3) that lets you read paywalled Medium articles via the [Freedium](https://freedium-mirror.cfd) mirror, without leaving the Medium page.
 
+## Demo
+
+**1. A member-only story on Medium** — the floating **Read for free** button appears bottom-right.
+
+![Member-only story on Medium with the Read for free button](docs/screenshots/01-medium-member-only-original.jpg)
+
+**2. Same tab, one click later** — the article is rendered from Freedium inside a full-screen overlay. **Show original** toggles back to Medium.
+
+![Article unlocked inside the Freedium overlay](docs/screenshots/02-freedium-overlay-unlocked.jpg)
+
 ## How it works
 
 - On any Medium article a floating **Read for free** button appears; the article is loaded from Freedium inside a full-screen overlay.
