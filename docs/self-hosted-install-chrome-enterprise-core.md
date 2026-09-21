@@ -22,7 +22,7 @@ Reference values for this repo:
 
 ## 1. Create a Chrome Enterprise Core account
 
-1. Open <https://enterprise.google.com/chrome/chrome-browser-cloud-management/> and click **Sign up** (free).
+1. Open <https://chromeenterprise.google/products/chrome-enterprise-core/> and click **Sign up for free** (goes to `enterprise.google.com/signup/chrome-browser/…`).
    - If you already have a Google Workspace / Cloud Identity admin account for the
      domain, skip to step 3 and enable it from **Admin console → Billing → Buy or
      upgrade → Chrome Enterprise Core → Get started**.
