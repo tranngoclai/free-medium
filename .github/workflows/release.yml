@@ -1,0 +1,75 @@
+# On every v* tag: pack a signed .crx, publish it as a GitHub Release asset and
+# deploy updates.xml + .crx to GitHub Pages (served at UPDATE_HOST) so Chrome
+# can auto-update self-hosted installs.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+env:
+  UPDATE_HOST: https://freemedium.tranlight.dev
+
+permissions:
+  contents: write   # create the GitHub Release
+  pages: write      # deploy to GitHub Pages
+  id-token: write   # required by actions/deploy-pages
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.build.outputs.version }}
+      ext_id: ${{ steps.build.outputs.ext_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check tag matches manifest version
+        run: |
+          MANIFEST="$(node -p "require('./manifest.json').version")"
+          [ "v$MANIFEST" = "${GITHUB_REF_NAME}" ] || { echo "Tag ${GITHUB_REF_NAME} != manifest v$MANIFEST"; exit 1; }
+
+      - name: Restore signing key
+        run: |
+          printf '%s' "${{ secrets.CRX_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Pack .crx and build update site
+        id: build
+        run: scripts/build-release-site.sh key.pem site
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f key.pem
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            site/free-medium-${{ steps.build.outputs.version }}.crx
+            site/updates.xml
+          body: |
+            Extension ID: `${{ steps.build.outputs.ext_id }}`
+            Update URL: ${{ env.UPDATE_HOST }}/updates.xml
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

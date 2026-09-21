@@ -26,6 +26,21 @@ Chrome extension (Manifest V3) that lets you read paywalled Medium articles via 
 2. Open `chrome://extensions`, enable **Developer mode**.
 3. Click **Load unpacked** and select the repo folder.
 
+## Self-hosted auto-updates
+
+Unpacked extensions never auto-update. Every `v*` tag runs the [Release workflow](.github/workflows/release.yml), which packs a signed `.crx`, attaches it to a GitHub Release and publishes the update site to **https://freemedium.tranlight.dev**:
+
+| File | Purpose |
+|---|---|
+| `updates.xml` | Omaha update manifest Chrome polls (`update_url` in `manifest.json`) |
+| `free-medium-<version>.crx` | Signed package referenced by `updates.xml` |
+
+- Extension ID: `ikbpjibhddfjalgppjekkmdihdfpnpbk` (derived from the signing key, stored as the `CRX_PRIVATE_KEY` repo secret — never commit the `.pem`).
+- Release: bump `version` in `manifest.json`, commit, then `git tag v<version> && git push --tags`. The workflow fails if the tag and manifest disagree.
+- Local dry run: `UPDATE_HOST=https://freemedium.tranlight.dev scripts/build-release-site.sh key.pem site`.
+
+Chrome on macOS/Windows only installs and updates off-store `.crx` files through enterprise policy. The free route is [Chrome Enterprise Core](https://support.google.com/chrome/a/answer/9116814): enroll the browser, then add the extension by ID with update URL `https://freemedium.tranlight.dev/updates.xml` under *Apps & extensions*.
+
 ## Project layout
 
 ```
@@ -40,6 +55,8 @@ src/
   freedium-frame.js         runs inside the Freedium iframe, dismisses its "Support" modal
 styles/overlay.css
 images/
+scripts/build-release-site.sh   pack .crx + generate updates.xml (used by CI)
+.github/workflows/release.yml   tag → GitHub Release + Pages deploy
 ```
 
 Content scripts can't use ES modules, so the isolated-world scripts share a `globalThis.FreeMedium` namespace and are loaded in the order listed in `manifest.json`.

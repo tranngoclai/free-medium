@@ -3,6 +3,7 @@
   "name": "FreeMedium",
   "version": "1.1",
   "description": "An extension to read Medium posts for free.",
+  "update_url": "https://freemedium.tranlight.dev/updates.xml",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -11,7 +12,9 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [
+        "<all_urls>"
+      ],
       "js": [
         "src/shared-constants.js",
         "src/medium-page-detection.js",
@@ -19,18 +22,29 @@
         "src/overlay-ui.js",
         "src/content.js"
       ],
-      "css": ["styles/overlay.css"],
+      "css": [
+        "styles/overlay.css"
+      ],
       "run_at": "document_start"
     },
     {
-      "matches": ["https://medium.com/*", "https://*.medium.com/*"],
-      "js": ["src/medium-history-hook.js"],
+      "matches": [
+        "https://medium.com/*",
+        "https://*.medium.com/*"
+      ],
+      "js": [
+        "src/medium-history-hook.js"
+      ],
       "world": "MAIN",
       "run_at": "document_start"
     },
     {
-      "matches": ["https://freedium-mirror.cfd/*"],
-      "js": ["src/freedium-frame.js"],
+      "matches": [
+        "https://freedium-mirror.cfd/*"
+      ],
+      "js": [
+        "src/freedium-frame.js"
+      ],
       "all_frames": true,
       "run_at": "document_idle"
     }
