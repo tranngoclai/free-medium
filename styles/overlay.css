@@ -1,0 +1,165 @@
+/* Design tokens. Prefixed so they can't collide with the host page. */
+:root {
+  --fm-primary: #007bff;
+  --fm-primary-light: #00c6ff;
+  --fm-primary-shadow: rgba(0, 123, 255, 0.4);
+  --fm-primary-shadow-hover: rgba(0, 123, 255, 0.55);
+  --fm-primary-faint: rgba(0, 123, 255, 0.15);
+  --fm-surface: #fff;
+  --fm-text: #333;
+  --fm-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --fm-gradient: linear-gradient(135deg, var(--fm-primary), var(--fm-primary-light));
+  --fm-z-overlay: 2147483646;
+  --fm-z-button: 2147483647;
+  --fm-overlay-transition: 0.35s;
+}
+
+/* ---------- Toggle button ---------- */
+
+#free-medium__button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 16px 26px;
+  background: var(--fm-gradient);
+  background-size: 200% 200%;
+  color: var(--fm-surface);
+  border: none;
+  border-radius: 48px;
+  font-family: var(--fm-font);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: var(--fm-z-button);
+  box-shadow: 0 4px 14px var(--fm-primary-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fm-gradient-shift 6s ease infinite;
+}
+
+#free-medium__button:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 20px var(--fm-primary-shadow-hover);
+}
+
+#free-medium__button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ---------- Full-screen overlay + iframe ---------- */
+
+#free-medium__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--fm-z-overlay);
+  background: var(--fm-surface);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.98);
+  transition:
+    opacity var(--fm-overlay-transition) ease,
+    transform var(--fm-overlay-transition) ease,
+    visibility 0s linear var(--fm-overlay-transition);
+}
+
+#free-medium__overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition:
+    opacity var(--fm-overlay-transition) ease,
+    transform var(--fm-overlay-transition) ease,
+    visibility 0s linear 0s;
+}
+
+#free-medium__iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#free-medium__iframe.is-loaded {
+  opacity: 1;
+}
+
+/* ---------- Loader shown until the iframe finishes ---------- */
+
+#free-medium__loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: var(--fm-surface);
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  font-family: var(--fm-font);
+}
+
+#free-medium__loader.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fm-spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--fm-primary), var(--fm-primary-light), var(--fm-primary));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  animation: fm-spin 0.9s linear infinite;
+}
+
+.fm-loader-text {
+  color: var(--fm-text);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  animation: fm-pulse 1.6s ease-in-out infinite;
+}
+
+.fm-loader-bar {
+  width: 180px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--fm-primary-faint);
+  overflow: hidden;
+  position: relative;
+}
+
+.fm-loader-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--fm-primary), transparent);
+  animation: fm-bar-shimmer 1.2s ease-in-out infinite;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes fm-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes fm-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fm-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes fm-bar-shimmer {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
