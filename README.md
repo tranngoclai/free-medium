@@ -39,7 +39,7 @@ Unpacked extensions never auto-update. Every `v*` tag runs the [Release workflow
 - Release: bump `version` in `manifest.json`, commit, then `git tag v<version> && git push --tags`. The workflow fails if the tag and manifest disagree.
 - Local dry run: `UPDATE_HOST=https://freemedium.tranlight.dev scripts/build-release-site.sh key.pem site`.
 
-Chrome on macOS/Windows only installs and updates off-store `.crx` files through enterprise policy. The free route is [Chrome Enterprise Core](https://support.google.com/chrome/a/answer/9116814): enroll the browser, then add the extension by ID with update URL `https://freemedium.tranlight.dev/updates.xml` under *Apps & extensions*.
+Chrome on macOS/Windows only installs and updates off-store `.crx` files through enterprise policy. The free route is Chrome Enterprise Core — step-by-step guide: [docs/self-hosted-install-chrome-enterprise-core.md](docs/self-hosted-install-chrome-enterprise-core.md).
 
 ## Project layout
 
